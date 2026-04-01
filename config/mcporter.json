@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "/opt/homebrew/bin/npx",
+      "args": ["-y", "@mauricio.wolff/mcp-obsidian@latest", "/Users/pongsathorn/Documents/Obsidian/Obsidian AI"]
+    }
+  },
+  "imports": []
+}
