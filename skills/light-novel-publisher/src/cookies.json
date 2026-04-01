@@ -1,0 +1,272 @@
+[
+  {
+    "name": "_GRECAPTCHA",
+    "value": "09AKhCRwiwl8mrihf2HNmaBqbC93MOILOo3EzV2NJOIRw6ALBg2xqdyfkKqDtTe1m6YkYch13uwBPVzxI3L_2M11s",
+    "domain": "www.google.com",
+    "path": "/recaptcha",
+    "expires": 1787936581.348299,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "read_mode",
+    "value": "normal",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920541.16628,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "user_agent",
+    "value": "Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F145.0.0.0%20Safari%2F537.36",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920583.104429,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "device_id",
+    "value": "4dd8a82a09b6b9489b7dd9d42a582ade",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920542,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "device_name",
+    "value": "Google%20Chrome-145.0.0.0-mac",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920542,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "cookies_version",
+    "value": "2",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920542,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_gid",
+    "value": "GA1.2.1861323685.1772384542",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1772470982,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_gat",
+    "value": "1",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1772384602,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_fbp",
+    "value": "fb.1.1772384542707.684774277777040552",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1780160582,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "username",
+    "value": "gg-78484551232237",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.11452,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "user_token",
+    "value": "az8rdn5l006hsmy7uywvmdbhx4bvpkiobd5d441e071d322a991caa00ced66a80",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114551,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "user_id",
+    "value": "14999966",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.11458,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "email",
+    "value": "mellowjam05%40gmail.com",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114602,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "user_type",
+    "value": "3",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114629,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "display_name",
+    "value": "mellowjam",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114654,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "is_accept_donate",
+    "value": "0",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114717,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "is_donee",
+    "value": "0",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.11474,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "user_thumbnail_edition",
+    "value": "1",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114774,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "user_cover_edition",
+    "value": "1",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114799,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "verified_id_card",
+    "value": "1",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582.114821,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga_SGF9XKKZK4",
+    "value": "GS2.1.s1772384541$o1$g1$t1772384582$j19$l0$h0",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1806944582.652719,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga",
+    "value": "GA1.2.2077103160.1772384542",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1806944582.853203,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "view_newux",
+    "value": "1",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "current_article_species",
+    "value": "All",
+    "domain": "www.readawrite.com",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "my_reading",
+    "value": "shelfArticle",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "is_activate_coin_user",
+    "value": "1",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1803920582,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga_2H4YWRE22W",
+    "value": "GS2.2.s1772384542$o1$g1$t1772384583$j19$l0$h0",
+    "domain": ".readawrite.com",
+    "path": "/",
+    "expires": 1806944583.146088,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  }
+]
