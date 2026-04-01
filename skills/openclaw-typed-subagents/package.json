@@ -1,0 +1,17 @@
+{
+  "name": "openclaw-typed-subagents",
+  "version": "1.0.0",
+  "description": "Provides 6 typed sub-agents with role-based tool permissions",
+  "type": "module",
+  "openclaw": {
+    "extensions": ["./src/index.ts"]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

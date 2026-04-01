@@ -1,0 +1,28 @@
+{
+  "id": "openclaw-typed-subagents",
+  "name": "Typed Sub-Agents",
+  "description": "Provides 6 typed sub-agents with role-based tool permissions, inspired by Claude Code's agent types",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "agentTypes": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "tools": {
+              "type": "object",
+              "properties": {
+                "allow": { "type": "array", "items": { "type": "string" } },
+                "deny": { "type": "array", "items": { "type": "string" } }
+              }
+            },
+            "maxIterations": { "type": "number" },
+            "timeoutSeconds": { "type": "number" }
+          }
+        }
+      }
+    }
+  }
+}

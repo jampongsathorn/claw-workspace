@@ -239,6 +239,44 @@ As Jam's PM agent, I coordinate team work:
 
 For deep technical reference on OpenClaw's filesystem, session types, and session tools → see `skills/openclaw-filesystem-sessions.md`
 
+## Claude Code (ACP)
+
+When code work is needed (editing, generation, refactoring, shell commands):
+
+**Spawn Claude Code ACP session:**
+```javascript
+sessions_spawn({
+  task: "Your coding task here",
+  runtime: "acp",
+  agentId: "claude",
+  mode: "run"      // one-shot
+  // or mode: "session" + thread: true for persistent
+})
+```
+
+| Param | Value |
+|-------|-------|
+| **Runtime** | ACP via acpx backend |
+| **Spawn** | `sessions_spawn` with `runtime: "acp"`, `agentId: "claude"` |
+| **Use for** | File editing, code generation, shell commands, refactoring |
+| **Permission** | `approve-all` (auto-approve writes + exec) |
+| **CWD default** | `~/.openclaw/workspace` |
+
+**Pattern: Claw orchestrates → Claude Code codes**
+
+```
+Claw (orchestrator)
+├── Plan feature / break down task
+├── Delegate → Claude Code ACP (coding)
+└── Review output / integrate
+```
+
+**Example task flow:**
+1. Claw: "Plan this feature, then delegate implementation to Claude Code"
+2. Claw spawns ACP session with: "Implement [specific feature] in [file]"
+3. Claude Code does the work
+4. Claw reviews and integrates
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
