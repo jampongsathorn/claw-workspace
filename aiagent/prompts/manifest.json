@@ -1,0 +1,102 @@
+{
+  "name": "aiagent",
+  "prompt_version": "2.5.0",
+  "released": "2026-09-17",
+  "status": "locked",
+  "lineage": "harness-research draft -> playbook draft (2.4) -> v2.5.0 submission -> locked v2.5.0 (patches P1-P7 applied)",
+  "dimensions": {
+    "binary": "unreleased (Phase 1 pending language decision)",
+    "prompt": "2.5.0",
+    "model": "resolved at runtime",
+    "platform": "resolved at runtime",
+    "surface": "resolved at runtime"
+  },
+  "channels": { "stable": "2.5.0", "preview": null, "nightly": "main" },
+  "tested_against_binary": [],
+  "assembly": {
+    "method": "concatenate files in order, joined by one blank line; no rewriting of module content",
+    "order": [
+      "core/00-identity.md",
+      "core/01-operating-loop.md",
+      "core/02-directive-inquiry.md",
+      "core/03-scope.md",
+      "core/04-investigation.md",
+      "core/05-tool-selection.md",
+      "core/06-verification.md",
+      "core/07-reporting.md",
+      "core/08-state-model.md",
+      "core/09-authorization.md",
+      "core/10-error-recovery.md",
+      "core/11-external-information.md",
+      "core/12-honesty.md",
+      "core/13-completion-contract.md",
+      "core/14-final-principle.md",
+      "core/15-style.md",
+      "behavior/harness.md",
+      "behavior/workspace.md",
+      "behavior/git.md",
+      "behavior/skills.md",
+      "behavior/subagents.md",
+      "behavior/execution.md",
+      "behavior/context-economy.md",
+      "behavior/communication.md",
+      "behavior/security.md",
+      "behavior/output-quality.md",
+      "behavior/persona.md",
+      "behavior/state-mechanics.md",
+      "tools/exec.md",
+      "tools/files.md",
+      "tools/web.md",
+      "tools/todo.md",
+      "tools/ask.md",
+      "tools/agent.md"
+    ],
+    "selects": {
+      "platform": "platform/{platform}.md   # linux | macos (v1 Tier 1)",
+      "surface": "surface/{surface}.md      # interactive | headless (gateway | ide later)",
+      "model": "model/{model}.md            # optional; absent = no override"
+    },
+    "select_order": ["platform", "surface", "model"],
+    "dynamic_tail_order": [
+      "workspace_instructions",
+      "skills_catalog",
+      "memory_index",
+      "user_block",
+      "git_snapshot",
+      "environment",
+      "mcp_instructions",
+      "notes_reinjection"
+    ],
+    "invariants": [
+      "Fixed module order as declared here; no dynamic reordering, ever.",
+      "The stable part (order + selects) is byte-identical across turns and across sessions for a given (prompt_version, model, platform, surface).",
+      "No timestamps, session ids, or other dynamic content in the stable part.",
+      "Assembly happens once at session start. Mid-session changes (mode, cwd, model) are APPENDED as system messages - never reassembled.",
+      "The dynamic tail is always last; per-session content follows dynamic_tail_order exactly.",
+      "The version stamp is rendered inside the environment block of the dynamic tail (data, not policy)."
+    ]
+  },
+  "frozen": {
+    "rule": "Frozen sections are the behavioral contract (core = contract, modules = capability/context). They may change only in a prompt MAJOR (2.x -> 3.0) and require explicit owner signoff; every change is recorded in CHANGELOG.",
+    "sections": [
+      { "file": "core/01-operating-loop.md",   "source": "submission section 1" },
+      { "file": "core/02-directive-inquiry.md", "source": "submission section 2" },
+      { "file": "core/07-reporting.md",         "source": "submission section 8" },
+      { "file": "core/08-state-model.md",       "source": "submission section 9" },
+      { "file": "core/09-authorization.md",     "source": "submission section 13" },
+      { "file": "core/12-honesty.md",           "source": "submission section 17" }
+    ]
+  },
+  "upgrade_matrix": {
+    "behavior_change": "prompt minor (frozen-section change = prompt major)",
+    "capability_change": "module file update; prompt minor if the module set changes",
+    "model_change": "model dimension (model/<model>.md); prompt patch at most",
+    "platform_change": "platform module (platform/<os>.md)",
+    "style_change": "behavior/output-quality.md"
+  },
+  "features": {
+    "skill_manage": { "enabled": true, "guard": "Task -> Use skill -> Observe gap -> Recurring? -> Propose/update -> Verify -> Persist. NEVER task-failed -> auto-rewrite." },
+    "subagents": ["explorer", "general-purpose", "planner"],
+    "reviewer": "deferred — phase-3 eval gate (diff-review eval vs single-pass self-check)"
+  }
+}

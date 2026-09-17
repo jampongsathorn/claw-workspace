@@ -1,0 +1,4 @@
+{"type":"init","sessionId":"2026-09-17T14-30-34-764Z-7wa1nn","model":"qwen3.8-27b-fp8","provider":"openai","promptVersion":"2.5.0","stableHash":"ef22ca3d21910ef2","platform":"headless","surface":"headless"}
+{"type":"turn","n":1}
+{"type":"error","message":"fetch failed","retryable":false}
+{"type":"done","turns":1,"usage":{"inputTokens":0,"outputTokens":0},"error":"fetch failed"}
