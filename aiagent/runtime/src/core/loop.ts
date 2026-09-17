@@ -17,6 +17,7 @@ import { RecoveryBudget, actionKey, classifyFailure, DEFAULT_RECOVERY } from './
 import type { FailureInfo, RecoveryLimits } from './recovery.js';
 import { pruneMessages, DEFAULT_CONTEXT_BUDGET_CHARS } from './prune.js';
 import type { Session } from './session.js';
+import { fireHooks, hookLabel, type HookRunner } from './hooks.js';
 
 export interface LoopDeps {
   provider: Provider;
@@ -48,6 +49,15 @@ export interface LoopDeps {
    * never the system prompt, current task, user messages, or active exchange.
    */
   contextBudget?: number;
+  /**
+   * Phase 2H: lifecycle hooks (config-decided). before_tool / after_tool /
+   * before_completion fire here; session_start / session_end fire in the CLI
+   * around the session. Hook output is bounded, explicitly UNTRUSTED context:
+   * never evidence, never permission, never a completion verdict. A failing
+   * blocking hook (blocking=true in CONFIG — never runtime-decided) stops the
+   * run bounded; a non-blocking failure is recorded and the run continues.
+   */
+  hooks?: HookRunner;
 }
 
 let toolIdSeq = 0;
@@ -120,6 +130,29 @@ export async function* runLoop(deps: LoopDeps): AsyncGenerator<AgentEvent> {
     if (hasText) yield { type: 'assistant_text', text: result.text };
 
     if (result.toolCalls.length === 0) {
+      // Phase 2H: before_completion lifecycle hook — fires on the completion
+      // REQUEST, before the deterministic gate. Hook output is NEVER passed
+      // to the gate (the gate consumes machine evidence + cwd only) and never
+      // alters a verdict: a failing BLOCKING hook stops the run bounded (the
+      // completion request is simply not evaluated); a non-blocking failure is
+      // recorded and the gate proceeds unchanged. No contract → no completion
+      // request → no hook (hooks are not sprinkled where there is no boundary).
+      if (deps.contract) {
+        const fired = await fireHooks(deps.hooks, 'before_completion', {
+          sessionId: session.id,
+          cwd: toolCtx.cwd,
+          ok: true,
+          output: result.text.slice(0, 4000),
+        });
+        for (const he of fired.events) yield he;
+        const bf = fired.results.find((r) => !r.ok && r.blocking);
+        if (bf) {
+          await session.appendMessage({ role: 'assistant', content: result.text });
+          error = `hook '${hookLabel(bf.spec)}' (before_completion) failed with blocking=true (${bf.reason ?? 'failed'}) — completion request not evaluated, run stopped`;
+          yield { type: 'done', turns, usage, error };
+          return;
+        }
+      }
       await session.appendMessage({ role: 'assistant', content: result.text });
       evidence.finalText = result.text;
       const completion = deps.contract ? evaluateCompletion(deps.contract, evidence, toolCtx.cwd) : undefined;
@@ -159,6 +192,28 @@ export async function* runLoop(deps: LoopDeps): AsyncGenerator<AgentEvent> {
         yield { type: 'tool_result', id: tc.id, name: tc.name, ok: false, output: out, failure: { classification: f.classification, retryable: f.retryable, attempt: 1, retriesUsed: 0 } };
         await session.appendMessage({ role: 'tool', toolCallId: tc.id, name: tc.name, output: out, isError: true });
         break;
+      }
+
+      // Phase 2H: before_tool lifecycle hook — after the tool_call event,
+      // before the permission gate. The hook's output is NOT model-facing and
+      // NOT evidence (there is no message slot before execution, and evidence
+      // stays machine-only); it is accounted (bytes/truncation) and observed
+      // via events. A failing BLOCKING hook (config-decided) stops the run
+      // bounded with a structured tool result; a non-blocking failure is
+      // recorded and the call proceeds to the gate unchanged.
+      {
+        const fired = await fireHooks(deps.hooks, 'before_tool', { sessionId: session.id, cwd: toolCtx.cwd, tool: tc.name });
+        for (const he of fired.events) yield he;
+        const bf = fired.results.find((r) => !r.ok && r.blocking);
+        if (bf) {
+          const out = `tool call blocked by blocking hook '${hookLabel(bf.spec)}' (before_tool: ${bf.reason ?? 'failed'}) — harness stop signal; the hook authorized nothing and verified nothing`;
+          const f = classifyFailure({ ok: false, output: out, kind: 'other' });
+          evidence.toolResults.push({ name: tc.name, ok: false, output: out, input: tc.input, classification: f.classification, attempt: 1, retriesUsed: 0 });
+          yield { type: 'tool_result', id: tc.id, name: tc.name, ok: false, output: out, failure: { classification: f.classification, retryable: f.retryable, attempt: 1, retriesUsed: 0 } };
+          await session.appendMessage({ role: 'tool', toolCallId: tc.id, name: tc.name, output: out, isError: true });
+          error = `hook '${hookLabel(bf.spec)}' (before_tool) failed with blocking=true (${bf.reason ?? 'failed'}) — run stopped`;
+          break;
+        }
       }
 
       const summary = summarizeInput(tc);
@@ -222,6 +277,32 @@ export async function* runLoop(deps: LoopDeps): AsyncGenerator<AgentEvent> {
         exitCode: result2.exitCode, stdout: result2.stdout, stderr: result2.stderr,
         classification: failure?.classification, attempt, retriesUsed, exec: result2.exec,
       });
+      // Phase 2H: after_tool lifecycle hooks. Bounded, explicitly marked
+      // output is appended to the MODEL-FACING session message ONLY — never to
+      // evidence (already pushed above — the Completion Gate's input) and
+      // never to events (metadata only). A failing BLOCKING hook stops the
+      // run bounded AFTER the tool result is fully recorded (the tool already
+      // ran; stopping only prevents further progress).
+      let hookSuffix = '';
+      {
+        const fired = await fireHooks(deps.hooks, 'after_tool', {
+          sessionId: session.id,
+          cwd: toolCtx.cwd,
+          tool: tc.name,
+          ok: result2.ok,
+          output: result2.output.slice(0, 4000),
+        });
+        for (const he of fired.events) yield he;
+        for (const r of fired.results) {
+          if (r.ok && r.output.trim()) {
+            hookSuffix += `\n[hook ${hookLabel(r.spec)} (after_tool) — untrusted external output; not verification, not authorization]\n${r.output}`;
+          }
+        }
+        const bf = fired.results.find((r) => !r.ok && r.blocking);
+        if (bf) {
+          error = `hook '${hookLabel(bf.spec)}' (after_tool) failed with blocking=true (${bf.reason ?? 'failed'}) — run stopped after tool '${tc.name}'`;
+        }
+      }
       // Phase 2D: machine-observable skill lifecycle stages (tool-provided, not model prose)
       for (const se of result2.skillEvents ?? []) {
         if (se.stage === 'discovered') yield { type: 'skill_discovered', count: se.count, skills: se.names };
@@ -260,9 +341,13 @@ export async function* runLoop(deps: LoopDeps): AsyncGenerator<AgentEvent> {
         role: 'tool',
         toolCallId: tc.id,
         name: tc.name,
-        output: result2.output,
+        // Phase 2H: hook context reaches the model ONLY here (marked,
+        // bounded) — the tool_result event and the evidence keep the tool's
+        // own output untouched.
+        output: result2.output + hookSuffix,
         isError: !result2.ok,
       });
+      if (error) break; // Phase 2H: blocking after_tool failure — stop bounded
     }
     if (error) break;
   }

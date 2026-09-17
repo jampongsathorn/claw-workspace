@@ -140,6 +140,22 @@ export type AgentEvent =
       retriesUsed: number;
       totalRetriesUsed: number;
     }
+  // Phase 2H: MCP lifecycle (machine-observable; server identity + bounded
+  // machine reasons only — never command args, env values, or secrets)
+  /** Phase 2H: an MCP server connected, initialized, and listed its tools. */
+  | { type: 'mcp_server_started'; server: string; durationMs: number; tools: number }
+  /** Phase 2H: an MCP server failed to start (or died) — reason is a machine string. */
+  | { type: 'mcp_server_failed'; server: string; reason: string }
+  /** Phase 2H: two MCP tools mapped to the same local name (deterministic: first wins). */
+  | { type: 'mcp_tool_conflict'; server: string; tool: string; kept: string }
+  // Phase 2H: hook lifecycle (metadata only — hook OUTPUT content is bounded
+  // model context, never an event payload)
+  /** Phase 2H: a lifecycle hook started. */
+  | { type: 'hook_started'; hook: string; event: string }
+  /** Phase 2H: a hook finished (exit 0). Output is accounted, not echoed. */
+  | { type: 'hook_completed'; hook: string; event: string; durationMs: number; exitCode: number | null; outputBytes: number; outputTruncated: boolean }
+  /** Phase 2H: a hook failed (nonzero exit / timeout / spawn error). */
+  | { type: 'hook_failed'; hook: string; event: string; reason: string; durationMs: number; blocking: boolean }
   | { type: 'max_turns'; turns: number }
   | {
       type: 'done';
